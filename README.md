@@ -1,5 +1,7 @@
 # Database_slave
-This gem provides master and slave databases support for Rails applications. It maintains a slave database configuration in config/shards.yml, and treats config/database.yml as master database. Then, you can choose which database you want to use in your ActiveRecord::Relation clauses. For example, you can use slave database to execute complicated and time-consuming database queries to balance the performance of master database, or separate read and write database operations.
+This gem provides master and slave databases support for Rails applications. It maintains a slave database configuration in config/shards.yml, and treats config/database.yml as master database. Then, you can choose which database you want to use in your ActiveRecord::Relation clauses.
+
+For example, you can use slave database to execute complicated and time-consuming database queries to balance the performance of master database, or separate read and write database operations.
 
 # Requirements
 
@@ -28,7 +30,7 @@ This gem provides master and slave databases support for Rails applications. It 
       adapter: mysql2
       ...
       ...
-  test
+  test:
     slave_database1:
       ...
   production:
@@ -36,7 +38,7 @@ This gem provides master and slave databases support for Rails applications. It 
       ...
   ```
 
-2. then add following to your settings.yml file:
+2. Then add following to your settings.yml file:
 
   ```
   using_slave: true
@@ -48,24 +50,25 @@ This gem provides master and slave databases support for Rails applications. It 
 
 There are two ways to use slave database:
 
-1. Single use: Append `using_slave(:slave_database_name)` to each ActiveRecord::Relation clause.
+1. **Single Use**: Append `using_slave(:slave_database_name)` to each ActiveRecord::Relation clause.
 
-Example:
+  Example:
 
-```ruby
-Book.where(id: 5).using_slave(:books_slave_database)
-```
+  ```ruby
+  Book.where(id: 5).using_slave(:books_slave_database)
+  ```
 
-2. Using block: In this way, all of queries in the block will use slave_database to execute queries.
+2. **With Block**: In this way, all of queries in the block will use slave_database to execute queries.
+  With this you don't need to append `using_slave()` to each queries.
 
-Example:
+  Example:
 
-```ruby
-Book.using_slave(:books_slave_database) do
-  books1 = Book.where(id: 9)
-  books2 = Book.where('id > 100')
-end
-```
+  ```ruby
+  Book.using_slave(:books_slave_database) do
+    books1 = Book.where(id: 9)
+    books2 = Book.where('id > 100')
+  end
+  ```
 
 # License
 
