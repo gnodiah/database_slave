@@ -1,0 +1,4 @@
+* 添加容错处理, 包括检查配置文件等
+* 添加测试代码
+* 需要优化代码: 只允许gem外部代码read slave_name, 不允许write(出于安全考虑)
+* 添加generator自动生成config/shards.yml.example

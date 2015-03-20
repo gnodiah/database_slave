@@ -1,0 +1,6 @@
+require 'database_slave/base'
+require 'database_slave/configuration'
+require 'database_slave/connection_handler'
+require 'database_slave/runtime_registry'
+require 'database_slave/relation'
+require 'database_slave/railtie'

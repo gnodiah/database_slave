@@ -1,2 +1,72 @@
-# database_slave
-Provide master and slave databases support for Rails applications.
+# Database_slave
+This gem provides master and slave databases support for Rails applications. It maintains a slave database configuration in config/shards.yml, and treats config/database.yml as master database. Then, you can choose which database you want to use in your ActiveRecord::Relation clauses. For example, you can use slave database to execute complicated and time-consuming database queries to balance the performance of master database, or separate read and write database operations.
+
+# Requirements
+
+* Ruby  >= 2.0.0
+* Rails >= 3.2.x
+
+# Preparing
+
+1. First of all, create a file named **shards.yml** in your Rails config directory,
+  its content is very similar to config/database.yml:
+
+  ```
+  development:
+    slave_database1:
+      adapter: mysql2
+      encoding: utf8
+      reconnect: false
+      port : 3306
+      pool: 5
+      username: root
+      password: test
+      host: 127.0.0.1
+      database: books
+
+    slave_database2:
+      adapter: mysql2
+      ...
+      ...
+  test
+    slave_database1:
+      ...
+  production:
+    slave_database1:
+      ...
+  ```
+
+2. then add following to your settings.yml file:
+
+  ```
+  using_slave: true
+  ```
+
+  **true** means you can use slave database, **false** means not.
+
+# Usage
+
+There are two ways to use slave database:
+
+1. Single use: Append `using_slave(:slave_database_name)` to each ActiveRecord::Relation clause.
+
+Example:
+
+```ruby
+Book.where(id: 5).using_slave(:books_slave_database)
+```
+
+2. Using block: In this way, all of queries in the block will use slave_database to execute queries.
+
+Example:
+
+```ruby
+Book.using_slave(:books_slave_database) do
+  books1 = Book.where(id: 9)
+  books2 = Book.where('id > 100')
+end
+```
+
+# License
+
+See LICENSE file.
