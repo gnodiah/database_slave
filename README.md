@@ -8,6 +8,14 @@ For example, you can use slave database to execute complicated and time-consumin
 * Ruby  >= 2.0.0
 * Rails >= 3.2.x
 
+# Installation
+
+Put the following line into you Gemfile:
+
+```
+gem 'database_slave', '0.1.0'
+```
+
 # Preparing
 
 1. First of all, create a file named **shards.yml** in your Rails config directory,
