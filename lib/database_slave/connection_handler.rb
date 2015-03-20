@@ -2,7 +2,7 @@ module DatabaseSlave
   class ConnectionHandler
     # === Description
     #
-    # 该方法根据 DatabaseSSlave::Configuration 的配置建立所有的数据库从库链接.
+    # 该方法根据 DatabaseSlave::Configuration 的配置建立所有的数据库从库链接.
     #
     # Rails在启动时会调用 ActiveRecord::Base.establish_connection 来建立database.yml连接,
     # 以上方法定义在 active_record/connection_adapters/abstract/connection_specification.rb
