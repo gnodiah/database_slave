@@ -12,8 +12,14 @@ For example, you can use slave database to execute complicated and time-consumin
 
 Put the following line into you Gemfile:
 
-```
+```bash
 gem 'database_slave', '0.1.0'
+```
+
+then execute:
+
+```bash
+bundle install
 ```
 
 # Preparing
@@ -21,7 +27,7 @@ gem 'database_slave', '0.1.0'
 1. First of all, create a file named **shards.yml** in your Rails config directory,
   its content is very similar to config/database.yml:
 
-  ```
+  ```yml
   development:
     slave_database1:
       adapter: mysql2
@@ -48,7 +54,7 @@ gem 'database_slave', '0.1.0'
 
 2. Then add following to your settings.yml file:
 
-  ```
+  ```ruby
   using_slave: true
   ```
 
