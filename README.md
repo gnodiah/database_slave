@@ -1,4 +1,7 @@
 # Database_slave
+[![Gem Version](https://badge.fury.io/rb/database_slave.svg)](https://github.com/Gnodiah/database_slave)
+![](http://ruby-gem-downloads-badge.herokuapp.com/database_slave?type=total&color=red)
+
 This gem provides master and slave databases support for Rails applications. It maintains a slave database configuration in config/shards.yml, and treats config/database.yml as master database. Then, you can choose which database you want to use in your ActiveRecord::Relation clauses.
 
 For example, you can use slave database to execute complicated and time-consuming database queries to balance the performance of master database, or separate read and write database operations.
