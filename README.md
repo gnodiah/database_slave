@@ -16,7 +16,7 @@ For example, you can use slave database to execute complicated and time-consumin
 Put the following line into you Gemfile:
 
 ```bash
-gem 'database_slave', '0.1.0'
+gem 'database_slave', '>= 0.1.0'
 ```
 
 then execute:

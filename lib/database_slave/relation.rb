@@ -85,6 +85,9 @@ module DatabaseSlave
       # And ActiveRecord::FinderMethods:
       #   first, first!, last, last!, find, all
       #
+      # And ActiveRecord::Batches:
+      #   find_each, find_in_batches
+      #
       if !DatabaseSlave::RuntimeRegistry.current_slave_name
         begin
           DatabaseSlave::RuntimeRegistry.current_slave_name = slave_name if using_slave?
