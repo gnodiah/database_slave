@@ -7,7 +7,7 @@ module DatabaseSlave
       self.slave_connections = []
 
       class << self
-        delegate :using_slave, to: :scoped
+        delegate :using_slave, :using, to: :scoped
       end
     end
   end

@@ -47,7 +47,7 @@ module DatabaseSlave
       end
     end
 
-    # alias using using_slave
+    alias using using_slave
 
     # === Description
     #
@@ -55,18 +55,94 @@ module DatabaseSlave
     #
     # 这里我们重写ActiveRecord::Relation的to_a方法只是为了做一件事:
     #
-    #   必须在当前relation返回后将是否使用从库的标识设置为否, 
+    #   必须在当前relation返回后将是否使用从库的标识设置为否,
     #   以免影响执行下一个relation时的主从库选择错误.
     #
     # 对应到代码即:
     #   DatabaseSlave::RuntimeRegistry.current_slave_name = nil
     #
     def to_a
-      DatabaseSlave::RuntimeRegistry.current_slave_name = slave_name if using_slave?
+      # 该if语句的作用是: 确保在一条使用从库的查询中存在的其他先决条件的
+      # 查询也使用从库。例如:
+      #
+      #   class Book < ActiveRecord::Base
+      #     default_scope lambda { where(:tag_id => Tag.published.pluck(:id)) }
+      #   end
+      #
+      # 当我们使用如下查询
+      #
+      #   Book.order('id DESC').limit(2).pluck(:id)
+      #
+      # 时, default_scope中的Tag需要被先查询出来. 为了Book和Tag的查询都使用从库,
+      # 避免查询Tag后便释放了从库连接而导致Book的查询使用的还是主库. 故在这里
+      # 加了条件判断: 如果父查询已经设置了使用从库, 那么内部的所有查询都使用从库,
+      # 直到父查询返回.
+      #
+      # Supports ActiveRecord::QueryMethods:
+      #   select, group, order, reorder, joins, where, having,
+      #   limit, offset, uniq
+      #
+      # And ActiveRecord::FinderMethods:
+      #   first, first!, last, last!, find, all
+      #
+      if !DatabaseSlave::RuntimeRegistry.current_slave_name
+        begin
+          DatabaseSlave::RuntimeRegistry.current_slave_name = slave_name if using_slave?
+          super
+        ensure
+          DatabaseSlave::RuntimeRegistry.current_slave_name = nil
+        end
+      else
+        super
+      end
+    end if defined?(Rails)
 
-      super
-    ensure
-      DatabaseSlave::RuntimeRegistry.current_slave_name = nil
+    # Supports ActiveRecord::FinderMethods:
+    #   exists?
+    #
+    def exists?(id = false)
+      if !DatabaseSlave::RuntimeRegistry.current_slave_name
+        begin
+          DatabaseSlave::RuntimeRegistry.current_slave_name = slave_name if using_slave?
+          super
+        ensure
+          DatabaseSlave::RuntimeRegistry.current_slave_name = nil
+        end
+      else
+        super
+      end
+    end if defined?(Rails)
+
+    # Supports ActiveRecord::Calculations:
+    #   pluck
+    #
+    def pluck(column_name)
+      if !DatabaseSlave::RuntimeRegistry.current_slave_name
+        begin
+          DatabaseSlave::RuntimeRegistry.current_slave_name = slave_name if using_slave?
+          super
+        ensure
+          DatabaseSlave::RuntimeRegistry.current_slave_name = nil
+        end
+      else
+        super
+      end
+    end if defined?(Rails)
+
+    # Supports ActiveRecord::Calculations:
+    #   count, average, minimun, maximum, sum, calculate
+    #
+    def calculate(operation, column_name, options = {})
+      if !DatabaseSlave::RuntimeRegistry.current_slave_name
+        begin
+          DatabaseSlave::RuntimeRegistry.current_slave_name = slave_name if using_slave?
+          super
+        ensure
+          DatabaseSlave::RuntimeRegistry.current_slave_name = nil
+        end
+      else
+        super
+      end
     end if defined?(Rails)
   end
 
