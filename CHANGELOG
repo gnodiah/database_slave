@@ -1,4 +1,10 @@
+0.1.2 - 2015-03-31
+  * support new usage:
+      ActiveRecord::Base.using(:slave_name) do
+      end
+  * prevent usage: ActiveRecord::Base.using(:slave_name).where()
+  * add error classes
 0.1.1 - 2015.03.31
   * alias using using_slave
-  * 解决父查询中包含default_scope等子查询而导致父查询不走从库的bug
-  * supprt pluck/count/sum etc.
+  * bug fixed: 父查询中包含default_scope等子查询时导致父查询不走从库
+  * supprt includes/pluck/count/sum etc.

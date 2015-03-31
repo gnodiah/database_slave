@@ -1,4 +1,5 @@
 require 'database_slave/base'
+require 'database_slave/errors'
 require 'database_slave/configuration'
 require 'database_slave/connection_handler'
 require 'database_slave/runtime_registry'

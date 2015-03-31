@@ -33,13 +33,20 @@ module DatabaseSlave
             DatabaseSlave::RuntimeRegistry.current_slave_name = nil
           end
         else
+          # 不能使用抽象类级联式查询, 即不能使用ActiveRecord::Base.using().where()
+          if self.name.eql? DatabaseSlave::NoneActiveRecord.name
+            raise DatabaseSlave::AbstractClassWithoutBlockError,
+              'a block must be given to abstract class, or you can use a specific class.'
+          end
+
           self.slave_name = "DatabaseSlave::ConnectionHandler::#{slave_name.to_s.strip.camelize}"
           relation = clone
 
           if ActiveRecord::Base.slave_connections.include? self.slave_name
             relation
           else
-            raise "#{slave_name} is not exist."
+            raise DatabaseSlave::SlaveConnectionNotExists,
+              "#{slave_name} is not exists."
           end
         end
       else

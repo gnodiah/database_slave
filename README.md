@@ -87,6 +87,8 @@ There are two ways to use slave database:
   end
   ```
 
+  Because of `alias`, you can use `using` instead of `using_slave`.
+
 # License
 
 See LICENSE file.

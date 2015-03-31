@@ -30,7 +30,8 @@ module DatabaseSlave
         klass          = self.const_set(slave_name.to_s.strip.camelize, Class.new)
 
         unless ActiveRecord::Base.respond_to?(spec.adapter_method)
-          raise "AdapterNotFound: database configuration specifies nonexistent #{config['adapter']} adapter"
+          raise DatabaseSlave::AdapterNotFound,
+            "database configuration specifies not include #{config['adapter']} adapter"
         end
 
         ActiveRecord::Base.slave_connections << klass.name
