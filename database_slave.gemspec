@@ -5,7 +5,6 @@ require 'database_slave/version'
 Gem::Specification.new do |gem|
   gem.name                  = 'database_slave'
   gem.version               = DatabaseSlave::VERSION
-  gem.date                  = '2015-03-17'
   gem.summary               = "Provide master and slave databases support for Rails applications."
   gem.description           = "Provide master and slave databases support for Rails applications."
   gem.authors               = ["Hayden Wei"]
