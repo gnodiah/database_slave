@@ -49,8 +49,8 @@ module DatabaseSlave
               "#{slave_name} is not exists."
           end
         end
-      else
-        clone
+      else # using master database if Settings.using_slave == false or nil
+        block_given? ? yield : clone
       end
     end
 
