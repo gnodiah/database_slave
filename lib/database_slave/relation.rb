@@ -24,8 +24,14 @@ module DatabaseSlave
     def using_slave(slave_name)
       if Settings.using_slave
         if block_given?
-          name = "DatabaseSlave::ConnectionHandler::#{slave_name.to_s.strip.camelize}"
-          ActiveRecord::Relation.class_variable_set(:@@slave_block_given, name)
+          db_name = "DatabaseSlave::ConnectionHandler::#{slave_name.to_s.strip.camelize}"
+          unless ActiveRecord::Base.slave_connections.include? db_name
+            raise DatabaseSlave::SlaveConnectionNotExists,
+              "#{slave_name} is not exists."
+          end
+
+          ActiveRecord::Relation.class_variable_set(:@@slave_block_given, db_name)
+          DatabaseSlave::RuntimeRegistry.current_slave_name ||= db_name
           begin
             yield
           ensure
@@ -154,6 +160,16 @@ module DatabaseSlave
         super
       end
     end if defined?(Rails)
+
+    # junk hack:
+    #   except会重新生成一个ActiveRecord::Relation对象, 所以except之前的using_slave就会失效,
+    # 这里hack一下添加进来.
+    #   (主要是为了解决kaminari分页时total_count仍然查询的是主库的问题.)
+    def except(*skips)
+      slave_name_snake = slave_name.to_s.underscore.split('/').last
+      return super if slave_name_snake.blank?
+      using_slave? ? super.using(slave_name_snake.to_sym) : super
+    end
   end
 
   def self.prepended(klass)

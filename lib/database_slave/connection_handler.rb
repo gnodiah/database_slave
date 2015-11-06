@@ -14,7 +14,7 @@ module DatabaseSlave
     #   查看源码可知原方法传入的是self, 即当前调用类; 类自带了name方法.
     #
     #   同理, 这里我们也应该传入一个类名, 但self不是所期望的, 于是这里使用了
-    #   
+    #
     #     self.const_set(slave_name.to_s.strip.camelize, Class.new)
     #
     #   的方式动态地创建了一个类.
@@ -42,7 +42,7 @@ module DatabaseSlave
   end
 
   # === Description
-  # 
+  #
   # 当真正要执行一条SQL语句的时候, Rails会调用
   #   ActiveRecord::Base.connection
   #
